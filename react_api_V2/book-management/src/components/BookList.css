@@ -1,0 +1,66 @@
+
+.book-list-container {
+	max-width: 800px;
+	margin: auto;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #f9f9f9;
+  }
+  
+
+  .book-list {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+  }
+  
+
+  .book-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	margin-bottom: 10px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background-color: #fff;
+  }
+  
+
+  .book-item h3 {
+	margin: 0;
+	font-size: 1.2em;
+	color: #333;
+  }
+  
+ 
+  .book-item p {
+	margin: 5px 0;
+	color: #555;
+  }
+  
+ 
+  .book-item button {
+	background-color: #dc3545; 
+	color: white; 
+	border: none;
+	padding: 5px 10px;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9em;
+  }
+  
+ 
+  .book-item button:hover {
+	background-color: #c82333; 
+  }
+  
+ 
+  .empty-message {
+	text-align: center;
+	font-size: 1.2em;
+	color: #666;
+	margin-top: 20px;
+  }
+  
