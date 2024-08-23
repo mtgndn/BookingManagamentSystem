@@ -58,7 +58,11 @@ function BookForm({ onSubmit, defaultValues = {} }) {
               <Form.Control
                 type="number"
                 placeholder="Enter published year"
-                {...register('publishedYear', { required: 'Published year is required', min: 0 })}
+                {...register('publishedYear', { 
+                  required: 'Published year is required',
+                  min: { value: 1000, message: 'Invalid year' },
+                  max: { value: new Date().getFullYear(), message: 'Year cannot be in the future' }
+                })}
                 isInvalid={!!errors.publishedYear}
               />
               <Form.Control.Feedback type="invalid">
@@ -72,7 +76,7 @@ function BookForm({ onSubmit, defaultValues = {} }) {
                 as="textarea"
                 placeholder="Enter book description"
                 rows={3}
-                {...register('description', { required: 'Description is required' })}
+                {...register('description')}
                 isInvalid={!!errors.description}
               />
               <Form.Control.Feedback type="invalid">
