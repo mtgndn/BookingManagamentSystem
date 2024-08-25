@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const montserrat = Montserrat({ 
 	weight: "600",
@@ -23,42 +24,43 @@ const routes = [{
 	{
 		label: "Converstation",
 		icon: MessageSquare,
-		href: "/dashboard",
+		href: "/converstation",
 		color: "text-violet-500",
 	},
 	{
 		label: "Add Book Page",
 		icon: Book,
-		href: "/dashboard",
+		href: "/adbook",
 		color: "text-pink-700",
 	},
 	{
 		label: "List Book Page",
 		icon: List,
-		href: "/dashboard",
+		href: "/listbook",
 		color: "text-orange-700",
 	},
 	{
-		label: "Social Books ",
+		label: "Social Book Page ",
 		icon: Users,
-		href: "/dashboard",
+		href: "/socialbook",
 		color: "text-emrald-500",
 	},
 	{
 		label: "Settings",
 		icon: Settings,
-		href: "/dashboard",
+		href: "/settings",
 	},
 ];
 
 
 
 const Sidebar = () => {
+	const pathname = usePathname ();
 	return ( 
 		<div className="spac-y-4 py-4 flex flex-col h-full bg-[#111827] text-white">
 			<div className="px-3 py-2 flex-1">
 				<Link href="/dashboard" className="flex items-center pl-3 mb-14">
-					<div className="relative w-8 h-8 mr-4">
+					<div className="relative w-10 h-10 mr-6">
 						<Image
 							fill
 							alt="logo"
@@ -74,7 +76,9 @@ const Sidebar = () => {
 						<Link 
 							href={route.href}
 							key={route.href}
-							className="text-sm group flex p-3 w-full justify-start font-medium cursour-pointer hover:text-white hover:bg-white/ rounded-lg transitation"
+							className={cn("text-sm group flex p-3 w-full justify-start font-medium cursour-pointer hover:text-white hover:bg-white/10 rounded-lg transitation",
+							pathname === route.href ? "text-white bg-white/10" : "text-zinc-400"
+							 )}
 						>
 							<div className="flex items-center flex-1">
 								<route.icon className={cn("h-5 w-5 mr-3", route.color)} />
