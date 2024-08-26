@@ -13,8 +13,8 @@ import {
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Genius",
-  description: "AI platform",
+  title: "Book Managament",
+  description: "Social Book Platform",
 };
 
 export default function RootLayout({

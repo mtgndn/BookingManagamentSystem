@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Heading } from "@/components/heading";
-import { BookOpen } from "lucide-react";
+import { BookOpen, List } from "lucide-react";
 import { useUser } from "@clerk/nextjs"; // Kullanıcı doğrulama için Clerk'i kullanıyoruz
 
 // Kitap bilgilerini temsil eden TypeScript arayüzü
@@ -44,8 +44,8 @@ const BookListPage = () => {
     <div>
       <Heading
         title="Book List"
-        description="Kendi kitaplarınızı görün."
-        icon={BookOpen}
+        description=""
+        icon={List}
         iconColor="text-green-500"
         bgColor="bg-green-500/10"
       />

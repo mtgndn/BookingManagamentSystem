@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Heading } from "@/components/heading";
-import { BookOpen } from "lucide-react";
+import { BookOpen, Users } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 
 interface Book {
@@ -43,7 +43,7 @@ const SocialBookPage = () => {
       <Heading
         title="Social Book"
         description="View books added by other users."
-        icon={BookOpen}
+        icon={Users}
         iconColor="text-purple-500"
         bgColor="bg-purple-500/10"
       />
