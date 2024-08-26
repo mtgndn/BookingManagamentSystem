@@ -1,16 +1,23 @@
-// models/Book.js
 const mongoose = require("mongoose");
 
-const bookSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  publishedYear: Number,
-  description: String,
-  addedBy: {
-    type: String, // Clerk user ID
-    required: true
-  }
+// Define the schema
+const BookSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  publishedYear: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
 });
 
-
+// Export the model
 module.exports = mongoose.model("Book", BookSchema);
