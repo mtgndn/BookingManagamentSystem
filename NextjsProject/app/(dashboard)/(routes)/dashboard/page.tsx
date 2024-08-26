@@ -2,11 +2,11 @@
 
 const tools = [
   {
-  label: "Converstation",
+  label: "Conversation",
   icon: MessageSquare,
   color :"text-violet-500",
   bgColor:"bg-violet-500/50",
-  href:"/converstation"
+  href:"/conversation"
   },
   {
   label: "Ad Book Page",
@@ -20,7 +20,7 @@ const tools = [
   icon: List,
   color :"text-violet-500",
   bgColor:"bg-violet-500/50",
-  href:"/listbook"
+  href:"/booklist"
   },
   {
     label: "Social Book Page",

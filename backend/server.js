@@ -1,32 +1,36 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const Book = require('./models/book');
-
 const app = express();
+const port = process.env.PORT || 5000;
+
 app.use(express.json());
 
-// MongoDB bağlantısı
-mongoose.connect('mongodb://localhost:27017/bookdb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+// Kitapları GET et
+app.get('/api/books', (req, res) => {
+  // Kitapları veritabanından veya local storage'dan çekin
+  res.json([
+    // Örnek veri
+    { id: '1', title: 'Book Title', author: 'Author Name', publishedYear: '2024', description: 'Book Description', timestamp: '2024-08-25 12:00:00' }
+  ]);
 });
 
-app.delete('/api/books/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const result = await Book.findByIdAndDelete(id);
-
-    if (!result) {
-      return res.status(404).json({ message: 'Book not found' });
-    }
-
-    res.status(200).json({ message: 'Book deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting book:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
-  }
+// Kitap ekle
+app.post('/api/books', (req, res) => {
+  // Kitabı veritabanına veya local storage'a ekleyin
+  res.status(201).send();
 });
 
-// Sunucuyu başlat
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Kitap sil
+app.delete('/api/books/:id', (req, res) => {
+  // Kitabı veritabanından veya local storage'dan silin
+  res.status(204).send();
+});
+
+// Yorum ekle
+app.post('/api/comments', (req, res) => {
+  // Yorumları ilgili kitabın üzerine ekleyin
+  res.status(201).send();
+});
+
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});

@@ -1,28 +1,25 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-const bookRoutes = require('./routes/books');
-
 const app = express();
+const bookRoutes = require('./routes/books');
+const commentRoutes = require('./routes/comments');
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 
-// MongoDB bağlantısı
-mongoose.connect('mongodb://localhost:27017/bookdb', {
+app.use('/api/books', bookRoutes);
+app.use('/api/comments', commentRoutes);
+
+
+mongoose.connect('mongodb://localhost:27017/bookingmanagament', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}).then(() => console.log('MongoDB bağlantısı başarılı'))
-  .catch(err => console.error('MongoDB bağlantı hatası:', err));
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Could not connect to MongoDB', err));
 
-// Route tanımları
-app.use('/api/books', bookRoutes);
-
-
-// Sunucuyu başlatma
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda çalışıyor...`);
+app.listen(5000, () => {
+    console.log('Server is running on port 5000');
+    
 });

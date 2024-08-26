@@ -22,9 +22,9 @@ const routes = [{
 		color: "text-sky-500",
 	},
 	{
-		label: "Converstation",
+		label: "Conversation",
 		icon: MessageSquare,
-		href: "/converstation",
+		href: "/conversation",
 		color: "text-violet-500",
 	},
 	{
@@ -34,9 +34,9 @@ const routes = [{
 		color: "text-pink-700",
 	},
 	{
-		label: "List Book Page",
+		label: "Book List Page",
 		icon: List,
-		href: "/listbook",
+		href: "/booklist",
 		color: "text-orange-700",
 	},
 	{
