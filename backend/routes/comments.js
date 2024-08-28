@@ -9,8 +9,9 @@ router.post('/', async (req, res) => {
             name: req.body.name,
             surname: req.body.surname,
             prompt: req.body.prompt,
-            timestamp: new Date().toLocaleString(),
-        });
+            timestamp: new Date().toISOString(), // ISO formatta tarih kaydı
+          });
+          
         const savedComment = await newComment.save();
         res.status(201).json(savedComment);
     } catch (err) {

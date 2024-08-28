@@ -5,13 +5,14 @@ const Book = require('../models/book');
 // Add a new book
 router.post('/books', async (req, res) => {
   const { title, author, publishedYear, description } = req.body;
-  
+  console.log(req.body)
   try {
     const newBook = new Book({
       title,
       author,
       publishedYear,
       description,
+      userId
     });
     
     await newBook.save();
