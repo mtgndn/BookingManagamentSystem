@@ -21,22 +21,15 @@ interface Comment {
   timestamp: string;
 }
 
-const PAGE_SIZE = 10;
-
 const ConversationPage = () => {
   const { user } = useUser();
   const [comments, setComments] = useState<Comment[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/comments");
-        // Sort comments by timestamp in descending order
-        const sortedComments = response.data.sort((a: Comment, b: Comment) =>
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-        );
-        setComments(sortedComments);
+        setComments(response.data);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
@@ -64,27 +57,12 @@ const ConversationPage = () => {
 
     try {
       const response = await axios.post("http://localhost:5000/api/comments", newComment);
-      // Update comments with the new comment at the top
-      setComments([response.data, ...comments].sort((a, b) =>
-        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-      ));
-      setCurrentPage(1); // Reset to the first page after adding a comment
+      setComments([response.data, ...comments]); // Add new comment to the top
     } catch (error) {
       console.error("Error submitting comment:", error);
     }
 
     form.reset();
-  };
-
-  // Pagination logic
-  const totalComments = comments.length;
-  const totalPages = Math.ceil(totalComments / PAGE_SIZE);
-  const displayedComments = comments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-
-  const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
   };
 
   return (
@@ -136,11 +114,12 @@ const ConversationPage = () => {
           </Form>
         </div>
         <div className="space-y-4 mt-4 comments-container">
-          {displayedComments.map((comment, index) => {
+          {comments.map((comment, index) => {
             const formattedDate = new Date(comment.timestamp);
+            // Ensure the timestamp is valid
             const displayDate = !isNaN(formattedDate.getTime()) 
               ? formattedDate.toLocaleString() 
-              : `Invalid Date: ${comment.timestamp}`;
+              : "Date not available";
             
             return (
               <div key={index} className="border p-4 rounded-lg">
@@ -156,25 +135,6 @@ const ConversationPage = () => {
               </div>
             );
           })}
-        </div>
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="bg-gray-200 px-4 py-2 rounded"
-          >
-            Previous
-          </button>
-          <span className="self-center">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="bg-gray-200 px-4 py-2 rounded"
-          >
-            Next
-          </button>
         </div>
       </div>
     </div>

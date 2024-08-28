@@ -12,7 +12,6 @@ import { BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-// Validation Schema
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   author: z.string().min(1, "Author is required"),
@@ -22,7 +21,6 @@ const formSchema = z.object({
   description: z.string().optional(),
 });
 
-// Book Type
 interface Book {
   title: string;
   author: string;
@@ -32,6 +30,7 @@ interface Book {
 
 const BookFormPage = () => {
   const [notificationVisible, setNotificationVisible] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,15 +53,20 @@ const BookFormPage = () => {
     };
 
     try {
-      await axios.post("http://localhost:5000/api/books", newBook);
-      setNotificationVisible(true);
-      form.reset();
-
-      setTimeout(() => {
-        router.push("/booklist");
-      }, 2000);
+      const response = await axios.post("http://localhost:5000/api/books", newBook);
+      if (response.status === 201) {
+        setNotificationVisible(true);
+        form.reset();
+        setRedirectUrl("/booklist"); // Set redirect URL but don't redirect yet
+      }
     } catch (error) {
       console.error("Error adding book:", error);
+    }
+  };
+
+  const handleRedirect = () => {
+    if (redirectUrl) {
+      router.push(redirectUrl);
     }
   };
 
@@ -167,7 +171,7 @@ const BookFormPage = () => {
           <div className="mt-4 p-4 border rounded-lg bg-green-100 text-green-800">
             Book successfully added! You can view it in the 
             <button 
-              onClick={() => router.push("/booklist")}
+              onClick={handleRedirect}
               className="text-blue-600 underline ml-1"
             >
               Book List
