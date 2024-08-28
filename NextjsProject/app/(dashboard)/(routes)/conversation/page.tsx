@@ -24,14 +24,19 @@ interface Comment {
 const ConversationPage = () => {
   const { user } = useUser();
   const [comments, setComments] = useState<Comment[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const commentsPerPage = 10;
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/comments");
-        setComments(response.data);
+        const sortedComments = response.data.sort((a: Comment, b: Comment) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        setComments(sortedComments);
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        console.error("Yorumlar getirilirken hata oluştu:", error);
       }
     };
 
@@ -52,18 +57,28 @@ const ConversationPage = () => {
       name: user?.firstName || "Anonymous",
       surname: user?.lastName || "User",
       prompt: values.prompt,
-      timestamp: new Date().toISOString(), // Ensure this is in ISO 8601 format
+      timestamp: new Date().toISOString(),
     };
 
     try {
       const response = await axios.post("http://localhost:5000/api/comments", newComment);
-      setComments([response.data, ...comments]); // Add new comment to the top
+      setComments([response.data, ...comments].sort((a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      ));
     } catch (error) {
-      console.error("Error submitting comment:", error);
+      console.error("Yorum gönderilirken hata oluştu:", error);
     }
 
     form.reset();
   };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const startIndex = (currentPage - 1) * commentsPerPage;
+  const currentComments = comments.slice(startIndex, startIndex + commentsPerPage);
+  const totalPages = Math.ceil(comments.length / commentsPerPage);
 
   return (
     <div>
@@ -100,7 +115,7 @@ const ConversationPage = () => {
                       <Input
                         className="border-0 outline-none focus-visible:ring-0 focus-visible:ring-transparent"
                         disabled={isLoading}
-                        placeholder="Write your comments..."
+                        placeholder="Yorumunuzu yazın..."
                         {...field}
                       />
                     </FormControl>
@@ -108,25 +123,24 @@ const ConversationPage = () => {
                 )}
               />
               <Button className="col-span-12 w-full" disabled={isLoading}>
-                Send
+                Gönder
               </Button>
             </form>
           </Form>
         </div>
         <div className="space-y-4 mt-4 comments-container">
-          {comments.map((comment, index) => {
+          {currentComments.map((comment, index) => {
             const formattedDate = new Date(comment.timestamp);
-            // Ensure the timestamp is valid
             const displayDate = !isNaN(formattedDate.getTime()) 
-              ? formattedDate.toLocaleString() 
-              : "Date not available";
-            
+              ? formattedDate.toLocaleString('tr-TR')
+              : "Tarih bulunamadı";
+
             return (
               <div key={index} className="border p-4 rounded-lg">
                 <div className="font-bold">
                   {comment.name} {comment.surname}
                 </div>
-                <div>
+                <div className="mt-2">
                   {comment.prompt}
                 </div>
                 <div className="text-gray-500 text-sm mt-2">
@@ -135,6 +149,17 @@ const ConversationPage = () => {
               </div>
             );
           })}
+        </div>
+        <div className="flex justify-center space-x-2 mt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <Button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              disabled={currentPage === page}
+            >
+              {page}
+            </Button>
+          ))}
         </div>
       </div>
     </div>

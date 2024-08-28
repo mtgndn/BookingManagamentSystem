@@ -45,11 +45,6 @@ const routes = [{
 		href: "/socialbook",
 		color: "text-emrald-500",
 	},
-	{
-		label: "Settings",
-		icon: Settings,
-		href: "/settings",
-	},
 ];
 
 

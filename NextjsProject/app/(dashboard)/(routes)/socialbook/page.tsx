@@ -1,68 +1,82 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Heading } from "@/components/heading";
-import { BookOpen, Users } from "lucide-react";
-import { useUser } from "@clerk/nextjs";
+import { List } from "lucide-react";
 
 interface Book {
-  id: string;
+  _id: string;
   title: string;
   author: string;
   publishedYear: string;
   description?: string;
-  timestamp: string;
   userId: string;
 }
 
 const SocialBookPage = () => {
-  const { user } = useUser();
   const [books, setBooks] = useState<Book[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
+  const booksPerPage = 10;
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/books");
-        const otherUsersBooks = response.data.filter(
-          (book: Book) => book.userId !== user?.id
-        );
-        setBooks(otherUsersBooks);
+        const response = await axios.get("http://localhost:5000/api/books/getAllBooks");
+        setBooks(response.data);
       } catch (error) {
-        setError("Unable to fetch books.");
+        setError("Error fetching books.");
         console.error("Error fetching books:", error);
       }
     };
 
     fetchBooks();
-  }, [user?.id]);
+  }, []); // Bağımlılık dizisinde hiçbir şey olmadığı için sadece bir kez çalışır
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
+  };
+
+  const startIndex = (currentPage - 1) * booksPerPage;
+  const currentBooks = books.slice(startIndex, startIndex + booksPerPage);
+  const totalPages = Math.ceil(books.length / booksPerPage);
 
   return (
     <div>
       <Heading
-        title="Social Book"
-        description="View books added by other users."
-        icon={Users}
-        iconColor="text-purple-500"
-        bgColor="bg-purple-500/10"
+        title="All Books"
+        description="View the books added by all users."
+        icon={List}
+        iconColor="text-blue-500"
+        bgColor="bg-blue-500/10"
       />
       <div className="px-4 lg:px-8">
         {error && <p className="text-red-500">{error}</p>}
-        <div className="space-y-4 mt-4">
-          {books.length === 0 && (
-            <p className="text-gray-500">No books added by other users yet.</p>
+        <div className="space-y-4">
+          {currentBooks.length === 0 ? (
+            <p className="text-gray-500">No books available.</p>
+          ) : (
+            currentBooks.map((book) => (
+              <div key={book._id} className="border p-4 rounded-lg">
+                <h2 className="text-xl font-bold">{book.title}</h2>
+                <p className="text-gray-700">{book.author}</p>
+                <p className="text-gray-600">Published Year: {book.publishedYear}</p>
+                {book.description && <p className="text-gray-500 mt-2">{book.description}</p>}
+              </div>
+            ))
           )}
-          {books.map((book) => (
-            <div key={book.id} className="border p-4 rounded-lg">
-              <div className="font-bold">
-                {book.title} - {book.author} ({book.publishedYear})
-              </div>
-              <div>{book.description}</div>
-              <div className="text-gray-500 text-sm mt-2">
-                Added on: {book.timestamp}
-              </div>
-            </div>
+        </div>
+        <div className="flex justify-center space-x-2 mt-4">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`px-4 py-2 border rounded ${currentPage === page ? "bg-blue-500 text-white" : "bg-white text-blue-500"}`}
+              disabled={currentPage === page}
+            >
+              {page}
+            </button>
           ))}
         </div>
       </div>

@@ -11,6 +11,7 @@ import { Heading } from "@/components/heading";
 import { BookOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useUser } from '@clerk/clerk-react';
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -19,6 +20,7 @@ const formSchema = z.object({
     .length(4, "Published year must be exactly 4 digits")
     .regex(/^\d+$/, "Published year must be numeric"),
   description: z.string().optional(),
+  userId: z.string().optional()
 });
 
 interface Book {
@@ -26,9 +28,13 @@ interface Book {
   author: string;
   publishedYear: string;
   description?: string;
+  userId: string;
 }
 
 const BookFormPage = () => {
+  const { user } = useUser(); // Kullanıcı bilgilerini al
+  const userId = user?.id; // userId'yi al
+
   const [notificationVisible, setNotificationVisible] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const router = useRouter();
@@ -39,6 +45,7 @@ const BookFormPage = () => {
       author: "",
       publishedYear: "",
       description: "",
+      userId: ""
     },
   });
 
@@ -50,6 +57,7 @@ const BookFormPage = () => {
       author: values.author,
       publishedYear: values.publishedYear,
       description: values.description,
+      userId: userId || ""
     };
 
     try {
